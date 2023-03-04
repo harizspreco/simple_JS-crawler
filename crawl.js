@@ -1,11 +1,11 @@
 const { JSDOM } = require("jsdom");
 
 async function crawlPage(baseURL, currentURL, pages) {
-  const htmlBody = "";
+  let htmlBody = null;
   const currentURLobj = new URL(currentURL);
   const baseURLobj = new URL(baseURL);
 
-  if (!currentURLobj.hostname !== baseURLobj.hostname) {
+  if (currentURLobj.hostname !== baseURLobj.hostname) {
     return pages;
   }
 
@@ -24,13 +24,13 @@ async function crawlPage(baseURL, currentURL, pages) {
       console.log(`HTTP Error, status code: ${response.status}`);
       return pages;
     }
+    console.log(`Crawling ${normalizedURL}`);
     const contentType = response.headers.get("content-type");
     if (!contentType.includes("text/html")) {
       console.error("Can't crawl non HTML pages");
       return pages;
     }
     htmlBody = await response.text();
-    console.log(htmlBody);
   } catch (error) {
     console.log(error);
   }
@@ -55,7 +55,6 @@ const getLinksFromHTML = (baseURL, HTMLbody) => {
       urls.push(link.href);
     }
   }
-  console.log(urls);
   return urls;
 };
 
